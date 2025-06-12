@@ -23,6 +23,17 @@
       border-radius: 50%;
     }
 
+    #triangleGagnant {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 20px solid red;
+      transform-origin: center bottom;
+      display: none;
+    }
+
     #tirer, #configurer {
       padding: 10px 20px;
       font-size: 1.2em;
@@ -35,29 +46,6 @@
       color: green;
       font-weight: bold;
       margin-top: 30px;
-    }
-
-    #aiguille {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 10;
-      pointer-events: none;
-    }
-
-    #aiguille::before {
-      content: '';
-      display: block;
-      width: 6px;
-      height: 180px;
-      background: red;
-      position: absolute;
-      top: -180px;
-      left: 50%;
-      transform: translateX(-50%) rotate(90deg); /* pointe vers 3h */
-      transform-origin: bottom center;
-      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
     }
 
     #configBox {
@@ -80,8 +68,11 @@
 </head>
 <body>
   <h1>Tirage au sort</h1>
-  <canvas id="roulette" width="400" height="400"></canvas>
-  <div id="aiguille"></div>
+  <div style="position: relative; display: inline-block;">
+    <canvas id="roulette" width="400" height="400"></canvas>
+    <div id="triangleGagnant"></div>
+  </div>
+
   <button id="configurer">Configurer les noms</button>
   <button id="tirer">Tirer au sort</button>
   <div id="resultat"></div>
@@ -103,6 +94,7 @@ Diana</textarea><br><br>
     const ctx = canvas.getContext("2d");
     const taille = canvas.width;
     const rayon = taille / 2;
+    const triangle = document.getElementById("triangleGagnant");
     const couleurs = ["#FF4C4C", "#4CAF50", "#2196F3", "#FFC107", "#9C27B0", "#FF9800", "#00BCD4", "#8BC34A"];
 
     function dessinerRoulette(rotation = 0) {
@@ -143,9 +135,22 @@ Diana</textarea><br><br>
       noms = autres;
     }
 
+    function positionnerTriangle(angle) {
+      const distance = rayon + 30;
+      const canvasRect = canvas.getBoundingClientRect();
+      const x = canvasRect.left + rayon + distance * Math.cos(angle);
+      const y = canvasRect.top + rayon + distance * Math.sin(angle);
+
+      triangle.style.left = `${x - 10}px`;
+      triangle.style.top = `${y - 20}px`;
+      triangle.style.transform = `rotate(${angle * 180 / Math.PI + 90}deg)`;
+      triangle.style.display = "block";
+    }
+
     function tirerAuSort() {
       const bouton = document.getElementById("tirer");
       bouton.disabled = true;
+      triangle.style.display = "none";
 
       melangerNoms();
 
@@ -171,6 +176,7 @@ Diana</textarea><br><br>
           requestAnimationFrame(anime);
         } else {
           document.getElementById("resultat").textContent = `🎉 Le gagnant est : ${gagnantForce} !`;
+          positionnerTriangle((Math.PI / 2) - angleFinal);
           bouton.disabled = false;
         }
       }
