@@ -28,14 +28,14 @@
       margin: 10px;
     }
     #resultat {
-      display: none; /* masqué */
+      display: none; /* caché */
     }
 
-    /* Flèche tournée 180°, plus large pour texte long */
+    /* Flèche à droite, taille large pour texte long */
     #fleche {
       position: absolute;
       top: 50%;
-      left: calc(50% - 270px);
+      left: calc(50% + 220px);
       transform: translateY(-50%) rotate(180deg);
       width: 140px;
       height: 40px;
@@ -167,7 +167,7 @@ Diana</textarea><br><br>
       const nomFleche = document.getElementById("nomFleche");
       bouton.disabled = true;
 
-      // Fade out texte dans la flèche
+      // fade out texte
       nomFleche.style.opacity = 0;
 
       melangerNoms();
@@ -193,7 +193,6 @@ Diana</textarea><br><br>
         if (t < 1) {
           requestAnimationFrame(anime);
         } else {
-          // On affiche le gagnant DANS la flèche, pas en bas
           nomFleche.textContent = gagnantForce;
           nomFleche.style.opacity = 1;
           bouton.disabled = false;
@@ -214,9 +213,9 @@ Diana</textarea><br><br>
         noms = lignes;
         dessinerRoulette();
         document.getElementById("configBox").style.display = "none";
-        document.getElementById("nomFleche").textContent = "Prêt ?";
-        document.getElementById("nomFleche").style.opacity = 1;
-        // plus besoin de clear #resultat puisque caché
+        const nomFleche = document.getElementById("nomFleche");
+        nomFleche.textContent = "Prêt ?";
+        nomFleche.style.opacity = 1;
       } else {
         alert("Le gagnant doit faire partie de la liste des noms.");
       }
