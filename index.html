@@ -28,18 +28,16 @@
       margin: 10px;
     }
     #resultat {
-      font-size: 1.5em;
-      color: green;
-      font-weight: bold;
-      margin-top: 30px;
+      display: none; /* masqué */
     }
-    /* Flèche et nom à l'intérieur */
+
+    /* Flèche tournée 180°, plus large pour texte long */
     #fleche {
       position: absolute;
       top: 50%;
-      left: calc(50% + 220px);
-      transform: translateY(-50%);
-      width: 80px;
+      left: calc(50% - 270px);
+      transform: translateY(-50%) rotate(180deg);
+      width: 140px;
       height: 40px;
       z-index: 10;
       display: flex;
@@ -50,11 +48,12 @@
       font-size: 1em;
       font-family: Arial, sans-serif;
       user-select: none;
+      overflow: hidden;
     }
     #fleche svg {
       position: absolute;
       top: 0; left: 0;
-      width: 80px;
+      width: 140px;
       height: 40px;
       pointer-events: none;
     }
@@ -64,6 +63,11 @@
       white-space: nowrap;
       opacity: 1;
       transition: opacity 0.6s ease;
+      padding: 0 15px;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      user-select: none;
     }
 
     #configBox {
@@ -86,8 +90,8 @@
 <body>
   <h1>Tirage au sort</h1>
   <div id="fleche">
-    <svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg" >
-      <polygon points="0,0 40,0 80,20 40,40 0,40 40,20" fill="red" />
+    <svg viewBox="0 0 140 40" xmlns="http://www.w3.org/2000/svg" >
+      <polygon points="140,0 100,0 60,20 100,40 140,40 100,20" fill="red" />
     </svg>
     <div id="nomFleche">Prêt ?</div>
   </div>
@@ -163,9 +167,8 @@ Diana</textarea><br><br>
       const nomFleche = document.getElementById("nomFleche");
       bouton.disabled = true;
 
-      // Efface le nom dans la flèche et met opacity à 0 pour fade out
+      // Fade out texte dans la flèche
       nomFleche.style.opacity = 0;
-      document.getElementById("resultat").textContent = "";
 
       melangerNoms();
 
@@ -190,9 +193,8 @@ Diana</textarea><br><br>
         if (t < 1) {
           requestAnimationFrame(anime);
         } else {
-          document.getElementById("resultat").textContent = `🎉 Le gagnant est : ${gagnantForce} !`;
+          // On affiche le gagnant DANS la flèche, pas en bas
           nomFleche.textContent = gagnantForce;
-          // Fade in du nom dans la flèche
           nomFleche.style.opacity = 1;
           bouton.disabled = false;
         }
@@ -214,7 +216,7 @@ Diana</textarea><br><br>
         document.getElementById("configBox").style.display = "none";
         document.getElementById("nomFleche").textContent = "Prêt ?";
         document.getElementById("nomFleche").style.opacity = 1;
-        document.getElementById("resultat").textContent = "";
+        // plus besoin de clear #resultat puisque caché
       } else {
         alert("Le gagnant doit faire partie de la liste des noms.");
       }
