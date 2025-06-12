@@ -102,19 +102,39 @@
   <button id="tirer">Tirer au sort</button>
   <div id="resultat"></div>
 
-  <div id="configBox">
-    <label for="listeNoms">Entrez les noms des participants (un par ligne) :</label><br>
-    <textarea id="listeNoms">Alice
-Bob
-Charlie
-Dick
-Diana</textarea><br><br>
-    <button id="validerNoms">Valider</button>
-  </div>
+<div id="configBox">
+  <label for="listeNoms">Entrez les noms des participants (un par ligne) :</label><br>
+  <textarea id="listeNoms">bennypok81
+DrICKGraou29BZH
+tinkerbell_1988
+timebandit2023
+Crazy_slothxx
+legraouteur
+rodrigomuller
+Zagarose
+fatal_rat
+ong_goldgun53xx
+Corsikak
+</textarea><br><br>
+  <button id="validerNoms">Valider</button>
+</div>
 
-  <script>
-    let noms = ["Alice", "Bob", "Charlie", "Dick", "Diana"];
-    const gagnantForce = "Dick";
+<script>
+  let noms = [
+    "bennypok81",
+    "DrICKGraou29BZH",
+    "tinkerbell_1988",
+    "timebandit2023",
+    "Crazy_slothxx",
+    "legraouteur",
+    "rodrigomuller",
+    "Zagarose",
+    "fatal_rat",
+    "ong_goldgun53xx",
+    "Corsikak",
+    "Drick"
+  ];
+  const gagnantForce = "DrICKGraou29BZH";
     const canvas = document.getElementById("roulette");
     const ctx = canvas.getContext("2d");
     const taille = canvas.width;
