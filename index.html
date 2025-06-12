@@ -27,7 +27,9 @@
       cursor: pointer;
       margin: 10px;
     }
-
+    #resultat {
+      display: none;
+    }
     #fleche {
       position: absolute;
       top: 50%;
@@ -39,6 +41,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1em;
+      font-family: Arial, sans-serif;
+      user-select: none;
+      overflow: hidden;
     }
     #fleche svg {
       position: absolute;
@@ -58,10 +66,7 @@
       max-width: 260px;
       overflow: hidden;
       text-overflow: ellipsis;
-      user-select: none;
-      font-weight: bold;
     }
-
     #configBox {
       position: fixed;
       top: 50%;
@@ -81,6 +86,7 @@
 </head>
 <body>
   <h1>Tirage au sort</h1>
+
   <div id="fleche">
     <svg viewBox="0 0 280 40" xmlns="http://www.w3.org/2000/svg">
       <polygon points="0,20 80,0 80,15 280,15 280,25 80,25 80,40" fill="red" />
@@ -122,8 +128,8 @@ Corsikak</textarea><br><br>
       "ong_goldgun53xx",
       "Corsikak"
     ];
-
     const gagnantForce = "DrICKGraou29BZH";
+
     const canvas = document.getElementById("roulette");
     const ctx = canvas.getContext("2d");
     const taille = canvas.width;
@@ -177,18 +183,18 @@ Corsikak</textarea><br><br>
       const bouton = document.getElementById("tirer");
       const nomFleche = document.getElementById("nomFleche");
       bouton.disabled = true;
-
       nomFleche.style.opacity = 0;
 
       melangerNoms();
 
       const nb = noms.length;
       const angleParPart = 2 * Math.PI / nb;
-      const rotations = 6 + Math.random() * 2;
       const indexGagnant = noms.indexOf(gagnantForce);
 
-      const angleFinal = indexGagnant * angleParPart + angleParPart / 2;
-      const angleRotationFinal = 2 * Math.PI * rotations + angleFinal;
+      const offset = 0; // alignement parfait
+      const angleFinal = indexGagnant * angleParPart + angleParPart / 2 + offset;
+      const rotations = 6 + Math.random() * 2;
+      const angleRotationFinal = rotations * 2 * Math.PI - angleFinal;
 
       let t = 0;
       const duree = 4000;
@@ -199,7 +205,7 @@ Corsikak</textarea><br><br>
         if (t > 1) t = 1;
         const easeOut = 1 - Math.pow(1 - t, 3);
         const angle = easeOut * angleRotationFinal;
-        dessinerRoulette(-angle);
+        dessinerRoulette(angle);
         if (t < 1) {
           requestAnimationFrame(anime);
         } else {
@@ -216,18 +222,16 @@ Corsikak</textarea><br><br>
     document.getElementById("configurer").addEventListener("click", () => {
       document.getElementById("configBox").style.display = "block";
     });
-
     document.getElementById("validerNoms").addEventListener("click", () => {
       const lignes = document.getElementById("listeNoms").value.trim().split(/\n+/);
       if (lignes.includes(gagnantForce)) {
         noms = lignes;
         dessinerRoulette();
         document.getElementById("configBox").style.display = "none";
-        const nomFleche = document.getElementById("nomFleche");
-        nomFleche.textContent = "Prêt ?";
-        nomFleche.style.opacity = 1;
+        document.getElementById("nomFleche").textContent = "Prêt ?";
+        document.getElementById("nomFleche").style.opacity = 1;
       } else {
-        alert("Le gagnant doit faire partie de la liste des noms.");
+        alert("Le gagnant doit faire partie de la liste.");
       }
     });
 
