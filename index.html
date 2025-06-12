@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -11,39 +11,55 @@
       padding: 50px;
       position: relative;
     }
+
     h1 {
       color: #444;
     }
+
     canvas {
       margin: 20px auto;
       display: block;
       border: 2px solid #ccc;
       border-radius: 50%;
     }
+
     #tirer, #configurer {
       padding: 10px 20px;
       font-size: 1.2em;
       cursor: pointer;
       margin: 10px;
     }
+
     #resultat {
       font-size: 1.5em;
       color: green;
       font-weight: bold;
       margin-top: 30px;
     }
+
     #aiguille {
       position: absolute;
-      top: 500px;
+      top: 50%;
       left: 50%;
-      width: 0;
-      height: 0;
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-top: 30px solid red;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
       z-index: 10;
+      pointer-events: none;
     }
+
+    #aiguille::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 180px;
+      background: red;
+      position: absolute;
+      top: -180px;
+      left: 50%;
+      transform: translateX(-50%) rotate(90deg); /* pointe vers 3h */
+      transform-origin: bottom center;
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    }
+
     #configBox {
       position: fixed;
       top: 50%;
@@ -55,6 +71,7 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
       display: none;
     }
+
     #configBox textarea {
       width: 100%;
       height: 100px;
@@ -138,7 +155,7 @@ Diana</textarea><br><br>
       const indexGagnant = noms.indexOf(gagnantForce);
 
       const angleFinal = indexGagnant * angleParPart + angleParPart / 2;
-      const angleRotationFinal = 2 * Math.PI * rotations + (Math.PI / 2) - angleFinal;
+      const angleRotationFinal = 2 * Math.PI * rotations - angleFinal;
 
       let t = 0;
       const duree = 4000;
