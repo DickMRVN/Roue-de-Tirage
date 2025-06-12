@@ -30,15 +30,13 @@
     #resultat {
       display: none;
     }
-
-    /* Flèche à droite, plus longue (280px), hauteur 40px */
     #fleche {
       position: absolute;
       top: 50%;
       left: calc(50% + 220px);
       transform: translateY(-50%);
-      width: 280px; /* longueur */
-      height: 40px; /* hauteur */
+      width: 280px;
+      height: 40px;
       z-index: 10;
       display: flex;
       align-items: center;
@@ -70,7 +68,6 @@
       text-overflow: ellipsis;
       user-select: none;
     }
-
     #configBox {
       position: fixed;
       top: 50%;
@@ -92,7 +89,6 @@
   <h1>Tirage au sort</h1>
   <div id="fleche">
     <svg viewBox="0 0 280 40" xmlns="http://www.w3.org/2000/svg" >
-      <!-- Flèche pointe vers la gauche, longue -->
       <polygon points="0,20 80,0 80,15 280,15 280,25 80,25 80,40" fill="red" />
     </svg>
     <div id="nomFleche">Prêt ?</div>
@@ -102,9 +98,9 @@
   <button id="tirer">Tirer au sort</button>
   <div id="resultat"></div>
 
-<div id="configBox">
-  <label for="listeNoms">Entrez les noms des participants (un par ligne) :</label><br>
-  <textarea id="listeNoms">bennypok81
+  <div id="configBox">
+    <label for="listeNoms">Entrez les noms des participants (un par ligne) :</label><br>
+    <textarea id="listeNoms">bennypok81
 DrICKGraou29BZH
 tinkerbell_1988
 timebandit2023
@@ -116,24 +112,25 @@ fatal_rat
 ong_goldgun53xx
 Corsikak
 </textarea><br><br>
-  <button id="validerNoms">Valider</button>
-</div>
+    <button id="validerNoms">Valider</button>
+  </div>
 
-<script>
-  let noms = [
-    "bennypok81",
-    "DrICKGraou29BZH",
-    "tinkerbell_1988",
-    "timebandit2023",
-    "Crazy_slothxx",
-    "legraouteur",
-    "rodrigomuller",
-    "Zagarose",
-    "fatal_rat",
-    "ong_goldgun53xx",
-    "Corsikak"
-  ];
-  const gagnantForce = "DrICKGraou29BZH";
+  <script>
+    let noms = [
+      "bennypok81",
+      "DrICKGraou29BZH",
+      "tinkerbell_1988",
+      "timebandit2023",
+      "Crazy_slothxx",
+      "legraouteur",
+      "rodrigomuller",
+      "Zagarose",
+      "fatal_rat",
+      "ong_goldgun53xx",
+      "Corsikak"
+    ];
+    const gagnantForce = "DrICKGraou29BZH";
+
     const canvas = document.getElementById("roulette");
     const ctx = canvas.getContext("2d");
     const taille = canvas.width;
@@ -197,7 +194,8 @@ Corsikak
       const rotations = 6 + Math.random() * 2;
       const indexGagnant = noms.indexOf(gagnantForce);
 
-      const angleFinal = indexGagnant * angleParPart + angleParPart / 2;
+      // ✅ Correction : ajout de +0.03 pour un meilleur centrage du texte sous la flèche
+      const angleFinal = indexGagnant * angleParPart + angleParPart / 2 + 0.03;
       const angleRotationFinal = 2 * Math.PI * rotations - angleFinal;
 
       let t = 0;
