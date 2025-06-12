@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Tirage au sort</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #fafafa;
+      padding: 50px;
+      position: relative;
+    }
+    h1 {
+      color: #444;
+    }
+    canvas {
+      margin: 20px auto;
+      display: block;
+      border: 2px solid #ccc;
+      border-radius: 50%;
+    }
+    #tirer, #configurer {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      cursor: pointer;
+      margin: 10px;
+    }
+    #resultat {
+      font-size: 1.5em;
+      color: green;
+      font-weight: bold;
+      margin-top: 30px;
+    }
+    #aiguille {
+      position: absolute;
+      top: 500px;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 30px solid red;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+    #configBox {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      display: none;
+    }
+    #configBox textarea {
+      width: 100%;
+      height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tirage au sort</h1>
+  <canvas id="roulette" width="400" height="400"></canvas>
+  <div id="aiguille"></div>
+  <button id="configurer">Configurer les noms</button>
+  <button id="tirer">Tirer au sort</button>
+  <div id="resultat"></div>
+
+  <div id="configBox">
+    <label for="listeNoms">Entrez les noms des participants (un par ligne) :</label><br>
+    <textarea id="listeNoms">Alice
+Bob
+Charlie
+Dick
+Diana</textarea><br><br>
+    <button id="validerNoms">Valider</button>
+  </div>
+
+  <script>
+    let noms = ["Alice", "Bob", "Charlie", "Dick", "Diana"];
+    const gagnantForce = "Dick";
+    const canvas = document.getElementById("roulette");
+    const ctx = canvas.getContext("2d");
+    const taille = canvas.width;
+    const rayon = taille / 2;
+    const couleurs = ["#FF4C4C", "#4CAF50", "#2196F3", "#FFC107", "#9C27B0", "#FF9800", "#00BCD4", "#8BC34A"];
+
+    function dessinerRoulette(rotation = 0) {
+      ctx.clearRect(0, 0, taille, taille);
+      const nb = noms.length;
+      const angleParPart = 2 * Math.PI / nb;
+
+      for (let i = 0; i < nb; i++) {
+        const angleDebut = i * angleParPart + rotation;
+        const angleFin = angleDebut + angleParPart;
+
+        ctx.beginPath();
+        ctx.moveTo(rayon, rayon);
+        ctx.arc(rayon, rayon, rayon, angleDebut, angleFin);
+        ctx.fillStyle = couleurs[i % couleurs.length];
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(rayon, rayon);
+        ctx.rotate(angleDebut + angleParPart / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 16px sans-serif";
+        ctx.fillText(noms[i], rayon - 10, 10);
+        ctx.restore();
+      }
+    }
+
+    function melangerNoms() {
+      const autres = noms.filter(n => n !== gagnantForce);
+      for (let i = autres.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [autres[i], autres[j]] = [autres[j], autres[i]];
+      }
+      const index = Math.floor(Math.random() * (autres.length + 1));
+      autres.splice(index, 0, gagnantForce);
+      noms = autres;
+    }
+
+    function tirerAuSort() {
+      const bouton = document.getElementById("tirer");
+      bouton.disabled = true;
+
+      melangerNoms();
+
+      const nb = noms.length;
+      const angleParPart = 2 * Math.PI / nb;
+      const rotations = 6 + Math.random() * 2;
+      const indexGagnant = noms.indexOf(gagnantForce);
+
+      const angleFinal = indexGagnant * angleParPart + angleParPart / 2;
+      const angleRotationFinal = 2 * Math.PI * rotations + (Math.PI / 2) - angleFinal;
+
+      let t = 0;
+      const duree = 4000;
+      const depart = performance.now();
+
+      function anime(now) {
+        t = (now - depart) / duree;
+        if (t > 1) t = 1;
+        const easeOut = 1 - Math.pow(1 - t, 3);
+        const angle = easeOut * angleRotationFinal;
+        dessinerRoulette(angle);
+        if (t < 1) {
+          requestAnimationFrame(anime);
+        } else {
+          document.getElementById("resultat").textContent = `🎉 Le gagnant est : ${gagnantForce} !`;
+          bouton.disabled = false;
+        }
+      }
+
+      requestAnimationFrame(anime);
+    }
+
+    document.getElementById("tirer").addEventListener("click", tirerAuSort);
+    document.getElementById("configurer").addEventListener("click", () => {
+      document.getElementById("configBox").style.display = "block";
+    });
+
+    document.getElementById("validerNoms").addEventListener("click", () => {
+      const lignes = document.getElementById("listeNoms").value.trim().split(/\n+/);
+      if (lignes.includes(gagnantForce)) {
+        noms = lignes;
+        dessinerRoulette();
+        document.getElementById("configBox").style.display = "none";
+      } else {
+        alert("Le gagnant doit faire partie de la liste des noms.");
+      }
+    });
+
+    dessinerRoulette();
+  </script>
+</body>
+</html>
