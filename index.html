@@ -11,43 +11,41 @@
       padding: 50px;
       position: relative;
     }
-
     h1 {
       color: #444;
     }
-
     canvas {
       margin: 20px auto;
       display: block;
-      border: 2px solid #ccc;
+      border: 4px solid #000;
       border-radius: 50%;
+      background: white;
     }
-
-    #triangleGagnant {
-      position: absolute;
-      width: 0;
-      height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-bottom: 20px solid red;
-      transform-origin: center bottom;
-      display: none;
-    }
-
     #tirer, #configurer {
       padding: 10px 20px;
       font-size: 1.2em;
       cursor: pointer;
       margin: 10px;
     }
-
     #resultat {
       font-size: 1.5em;
       color: green;
       font-weight: bold;
       margin-top: 30px;
     }
-
+    #fleche {
+      position: absolute;
+      top: 50%;
+      left: calc(50% + 220px);
+      transform: translateY(-50%) rotate(180deg);
+      width: 0;
+      height: 0;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 40px solid red;
+      z-index: 10;
+      transform-origin: center;
+    }
     #configBox {
       position: fixed;
       top: 50%;
@@ -59,7 +57,6 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
       display: none;
     }
-
     #configBox textarea {
       width: 100%;
       height: 100px;
@@ -68,11 +65,8 @@
 </head>
 <body>
   <h1>Tirage au sort</h1>
-  <div style="position: relative; display: inline-block;">
-    <canvas id="roulette" width="400" height="400"></canvas>
-    <div id="triangleGagnant"></div>
-  </div>
-
+  <div id="fleche"></div>
+  <canvas id="roulette" width="400" height="400"></canvas>
   <button id="configurer">Configurer les noms</button>
   <button id="tirer">Tirer au sort</button>
   <div id="resultat"></div>
@@ -88,13 +82,12 @@ Diana</textarea><br><br>
   </div>
 
   <script>
-    let noms = ["Alice", "Bob", "Charlie", "DrICKGraou29BZH", "Diana"];
-    const gagnantForce = "DrICKGraou29BZH";
+    let noms = ["Alice", "Bob", "Charlie", "Dick", "Diana"];
+    const gagnantForce = "Dick";
     const canvas = document.getElementById("roulette");
     const ctx = canvas.getContext("2d");
     const taille = canvas.width;
     const rayon = taille / 2;
-    const triangle = document.getElementById("triangleGagnant");
     const couleurs = ["#FF4C4C", "#4CAF50", "#2196F3", "#FFC107", "#9C27B0", "#FF9800", "#00BCD4", "#8BC34A"];
 
     function dessinerRoulette(rotation = 0) {
@@ -117,11 +110,16 @@ Diana</textarea><br><br>
         ctx.translate(rayon, rayon);
         ctx.rotate(angleDebut + angleParPart / 2);
         ctx.textAlign = "right";
-        ctx.fillStyle = "#fff";
+        ctx.fillStyle = "#000";
         ctx.font = "bold 16px sans-serif";
         ctx.fillText(noms[i], rayon - 10, 10);
         ctx.restore();
       }
+
+      ctx.beginPath();
+      ctx.arc(rayon, rayon, 30, 0, 2 * Math.PI);
+      ctx.fillStyle = "#000";
+      ctx.fill();
     }
 
     function melangerNoms() {
@@ -135,22 +133,9 @@ Diana</textarea><br><br>
       noms = autres;
     }
 
-    function positionnerTriangle(angle) {
-      const distance = rayon + 30;
-      const canvasRect = canvas.getBoundingClientRect();
-      const x = canvasRect.left + rayon + distance * Math.cos(angle);
-      const y = canvasRect.top + rayon + distance * Math.sin(angle);
-
-      triangle.style.left = `${x - 10}px`;
-      triangle.style.top = `${y - 20}px`;
-      triangle.style.transform = `rotate(${angle * 180 / Math.PI + 90}deg)`;
-      triangle.style.display = "block";
-    }
-
     function tirerAuSort() {
       const bouton = document.getElementById("tirer");
       bouton.disabled = true;
-      triangle.style.display = "none";
 
       melangerNoms();
 
@@ -176,7 +161,6 @@ Diana</textarea><br><br>
           requestAnimationFrame(anime);
         } else {
           document.getElementById("resultat").textContent = `🎉 Le gagnant est : ${gagnantForce} !`;
-          positionnerTriangle((Math.PI / 2) - angleFinal);
           bouton.disabled = false;
         }
       }
