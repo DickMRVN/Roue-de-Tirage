@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Tirage au sort</title>
   <style>
     body {
@@ -33,19 +33,39 @@
       font-weight: bold;
       margin-top: 30px;
     }
+    /* Flèche et nom à l'intérieur */
     #fleche {
       position: absolute;
       top: 50%;
       left: calc(50% + 220px);
-      transform: translateY(-50%) rotate(180deg);
-      width: 0;
-      height: 0;
-      border-top: 20px solid transparent;
-      border-bottom: 20px solid transparent;
-      border-left: 40px solid red;
+      transform: translateY(-50%);
+      width: 80px;
+      height: 40px;
       z-index: 10;
-      transform-origin: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1em;
+      font-family: Arial, sans-serif;
+      user-select: none;
     }
+    #fleche svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 80px;
+      height: 40px;
+      pointer-events: none;
+    }
+    #nomFleche {
+      position: relative;
+      z-index: 20;
+      white-space: nowrap;
+      opacity: 1;
+      transition: opacity 0.6s ease;
+    }
+
     #configBox {
       position: fixed;
       top: 50%;
@@ -65,7 +85,12 @@
 </head>
 <body>
   <h1>Tirage au sort</h1>
-  <div id="fleche"></div>
+  <div id="fleche">
+    <svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg" >
+      <polygon points="0,0 40,0 80,20 40,40 0,40 40,20" fill="red" />
+    </svg>
+    <div id="nomFleche">Prêt ?</div>
+  </div>
   <canvas id="roulette" width="400" height="400"></canvas>
   <button id="configurer">Configurer les noms</button>
   <button id="tirer">Tirer au sort</button>
@@ -135,7 +160,12 @@ Diana</textarea><br><br>
 
     function tirerAuSort() {
       const bouton = document.getElementById("tirer");
+      const nomFleche = document.getElementById("nomFleche");
       bouton.disabled = true;
+
+      // Efface le nom dans la flèche et met opacity à 0 pour fade out
+      nomFleche.style.opacity = 0;
+      document.getElementById("resultat").textContent = "";
 
       melangerNoms();
 
@@ -161,6 +191,9 @@ Diana</textarea><br><br>
           requestAnimationFrame(anime);
         } else {
           document.getElementById("resultat").textContent = `🎉 Le gagnant est : ${gagnantForce} !`;
+          nomFleche.textContent = gagnantForce;
+          // Fade in du nom dans la flèche
+          nomFleche.style.opacity = 1;
           bouton.disabled = false;
         }
       }
@@ -179,6 +212,9 @@ Diana</textarea><br><br>
         noms = lignes;
         dessinerRoulette();
         document.getElementById("configBox").style.display = "none";
+        document.getElementById("nomFleche").textContent = "Prêt ?";
+        document.getElementById("nomFleche").style.opacity = 1;
+        document.getElementById("resultat").textContent = "";
       } else {
         alert("Le gagnant doit faire partie de la liste des noms.");
       }
