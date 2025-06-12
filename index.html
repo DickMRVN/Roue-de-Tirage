@@ -28,17 +28,17 @@
       margin: 10px;
     }
     #resultat {
-      display: none; /* caché */
+      display: none;
     }
 
-    /* Flèche à droite, taille large pour texte long */
+    /* Flèche à droite, plus longue (280px), hauteur 40px */
     #fleche {
       position: absolute;
       top: 50%;
       left: calc(50% + 220px);
-      transform: translateY(-50%) rotate(0deg);
-      width: 140px;
-      height: 40px;
+      transform: translateY(-50%);
+      width: 280px; /* longueur */
+      height: 40px; /* hauteur */
       z-index: 10;
       display: flex;
       align-items: center;
@@ -52,8 +52,9 @@
     }
     #fleche svg {
       position: absolute;
-      top: 0; left: 0;
-      width: 140px;
+      top: 0;
+      left: 0;
+      width: 280px;
       height: 40px;
       pointer-events: none;
     }
@@ -63,8 +64,8 @@
       white-space: nowrap;
       opacity: 1;
       transition: opacity 0.6s ease;
-      padding: 0 15px;
-      max-width: 120px;
+      padding: 0 20px;
+      max-width: 260px;
       overflow: hidden;
       text-overflow: ellipsis;
       user-select: none;
@@ -90,8 +91,9 @@
 <body>
   <h1>Tirage au sort</h1>
   <div id="fleche">
-    <svg viewBox="0 0 140 40" xmlns="http://www.w3.org/2000/svg" >
-      <polygon points="140,0 100,0 60,20 100,40 140,40 100,20" fill="red" />
+    <svg viewBox="0 0 280 40" xmlns="http://www.w3.org/2000/svg" >
+      <!-- Flèche pointe vers la gauche, longue -->
+      <polygon points="0,20 80,0 80,15 280,15 280,25 80,25 80,40" fill="red" />
     </svg>
     <div id="nomFleche">Prêt ?</div>
   </div>
@@ -167,7 +169,6 @@ Diana</textarea><br><br>
       const nomFleche = document.getElementById("nomFleche");
       bouton.disabled = true;
 
-      // fade out texte
       nomFleche.style.opacity = 0;
 
       melangerNoms();
