@@ -27,9 +27,7 @@
       cursor: pointer;
       margin: 10px;
     }
-    #resultat {
-      display: none;
-    }
+
     #fleche {
       position: absolute;
       top: 50%;
@@ -41,12 +39,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-size: 1em;
-      font-family: Arial, sans-serif;
-      user-select: none;
-      overflow: hidden;
     }
     #fleche svg {
       position: absolute;
@@ -67,7 +59,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
       user-select: none;
+      font-weight: bold;
     }
+
     #configBox {
       position: fixed;
       top: 50%;
@@ -88,15 +82,15 @@
 <body>
   <h1>Tirage au sort</h1>
   <div id="fleche">
-    <svg viewBox="0 0 280 40" xmlns="http://www.w3.org/2000/svg" >
+    <svg viewBox="0 0 280 40" xmlns="http://www.w3.org/2000/svg">
       <polygon points="0,20 80,0 80,15 280,15 280,25 80,25 80,40" fill="red" />
     </svg>
     <div id="nomFleche">Prêt ?</div>
   </div>
+
   <canvas id="roulette" width="400" height="400"></canvas>
   <button id="configurer">Configurer les noms</button>
   <button id="tirer">Tirer au sort</button>
-  <div id="resultat"></div>
 
   <div id="configBox">
     <label for="listeNoms">Entrez les noms des participants (un par ligne) :</label><br>
@@ -110,8 +104,7 @@ rodrigomuller
 Zagarose
 fatal_rat
 ong_goldgun53xx
-Corsikak
-</textarea><br><br>
+Corsikak</textarea><br><br>
     <button id="validerNoms">Valider</button>
   </div>
 
@@ -129,8 +122,8 @@ Corsikak
       "ong_goldgun53xx",
       "Corsikak"
     ];
-    const gagnantForce = "DrICKGraou29BZH";
 
+    const gagnantForce = "DrICKGraou29BZH";
     const canvas = document.getElementById("roulette");
     const ctx = canvas.getContext("2d");
     const taille = canvas.width;
@@ -194,9 +187,8 @@ Corsikak
       const rotations = 6 + Math.random() * 2;
       const indexGagnant = noms.indexOf(gagnantForce);
 
-      // ✅ Correction : ajout de +0.03 pour un meilleur centrage du texte sous la flèche
-      const angleFinal = indexGagnant * angleParPart + angleParPart / 2 + 0.03;
-      const angleRotationFinal = 2 * Math.PI * rotations - angleFinal;
+      const angleFinal = indexGagnant * angleParPart + angleParPart / 2;
+      const angleRotationFinal = 2 * Math.PI * rotations + angleFinal;
 
       let t = 0;
       const duree = 4000;
@@ -207,7 +199,7 @@ Corsikak
         if (t > 1) t = 1;
         const easeOut = 1 - Math.pow(1 - t, 3);
         const angle = easeOut * angleRotationFinal;
-        dessinerRoulette(angle);
+        dessinerRoulette(-angle);
         if (t < 1) {
           requestAnimationFrame(anime);
         } else {
